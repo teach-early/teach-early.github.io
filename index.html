@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Teach Early</title>
+<meta name="description" content="Screen-free, play-based learning for Grades 1 to 5. Free activities, books and tools for parents.">
+<meta name="theme-color" content="#EA5B6F">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Teach Early">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:opsz,wght@6..12,400;6..12,600;6..12,700;6..12,800&family=Zilla+Slab:wght@600;700&display=swap" rel="stylesheet">
+<style>
+/* Layout idea: one narrow phone column. Grade, then concept, then tabs of things to do. Brand red leads, blue marks progress, yellow marks stars and quick wins. */
+:root {
+  --red: #EA5B6F;
+  --red-ink: #C23A50;
+  --blue: #77BEF0;
+  --blue-ink: #2B78B3;
+  --yellow: #FFCB61;
+  --paper: #F5F8FB;
+  --card: #FFFFFF;
+  --ink: #1E2833;
+  --muted: #5A6675;
+  --line: #E1E8F0;
+  --soft-red: #FDECEF;
+  --soft-blue: #E9F4FD;
+  --soft-yellow: #FFF5DE;
+  --display: "Zilla Slab", Rockwell, "Roboto Slab", Georgia, serif;
+  --body: "Nunito Sans", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --radius: 14px;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --red-ink: #FF8C9C; --blue-ink: #8DCBF6;
+    --paper: #0F161E; --card: #18222D; --ink: #E7EDF4; --muted: #9AA8B7; --line: #26333F;
+    --soft-red: #3A1E25; --soft-blue: #16293A; --soft-yellow: #3A3020;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --red-ink: #FF8C9C; --blue-ink: #8DCBF6;
+  --paper: #0F161E; --card: #18222D; --ink: #E7EDF4; --muted: #9AA8B7; --line: #26333F;
+  --soft-red: #3A1E25; --soft-blue: #16293A; --soft-yellow: #3A3020;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body { background: var(--paper); color: var(--ink); font-family: var(--body); font-size: 16px; line-height: 1.55; -webkit-text-size-adjust: 100%; }
+a { color: var(--blue-ink); }
+button { font: inherit; color: inherit; }
+:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; border-radius: 8px; }
+h1, h2, h3 { text-wrap: balance; margin: 0; }
+.wrap { max-width: 560px; margin: 0 auto; padding: 0 16px 40px; }
+
+/* Top bar */
+.bar { position: sticky; top: 0; z-index: 5; background: color-mix(in srgb, var(--paper) 88%, transparent); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); }
+.bar-in { max-width: 560px; margin: 0 auto; padding: 8px 16px; display: flex; align-items: center; gap: 10px; min-height: 56px; }
+.bar img { height: 34px; width: auto; display: block; }
+.back { text-decoration: none; color: var(--ink); display: inline-flex; align-items: center; gap: 4px; border: 1px solid var(--line); background: var(--card); border-radius: 999px; padding: 6px 12px 6px 8px; cursor: pointer; font-weight: 700; font-size: 14px; }
+.crumb { font-size: 14px; color: var(--muted); font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* Home */
+.hero { text-align: center; padding: 20px 0 8px; }
+.hero img { width: min(260px, 70%); height: auto; }
+.hero p { color: var(--muted); margin: 8px auto 0; max-width: 34ch; font-size: 17px; }
+.label { font-size: 12px; letter-spacing: .12em; text-transform: uppercase; font-weight: 800; color: var(--muted); margin: 26px 0 10px; }
+.subjects { display: flex; gap: 8px; flex-wrap: wrap; }
+.subj { border: 2px solid var(--red); background: var(--red); color: #fff; border-radius: 999px; padding: 8px 18px; font-weight: 800; }
+.subj.off { background: transparent; color: var(--muted); border-color: var(--line); font-weight: 700; }
+.subj small { font-weight: 600; opacity: .8; }
+.grades { display: grid; gap: 10px; }
+.gcard { display: grid; grid-template-columns: 56px 1fr auto; align-items: center; gap: 14px; background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px; text-decoration: none; color: inherit; }
+.gnum { width: 56px; height: 56px; border-radius: 50%; display: grid; place-items: center; font-family: var(--display); font-size: 28px; font-weight: 700; color: #fff; }
+.gcard h2 { font-family: var(--display); font-size: 22px; }
+.gcard .sub { color: var(--muted); font-size: 14px; }
+.chev { color: var(--muted); font-size: 22px; }
+
+/* Progress */
+.meter { height: 6px; background: var(--line); border-radius: 999px; overflow: hidden; margin-top: 6px; }
+.meter i { display: block; height: 100%; background: var(--blue); border-radius: 999px; }
+
+/* Grade page */
+.ghead { padding: 18px 0 4px; }
+.eyebrow { font-size: 12px; letter-spacing: .12em; text-transform: uppercase; font-weight: 800; color: var(--red-ink); }
+.ghead h1, .chead h1 { font-family: var(--display); font-size: 32px; line-height: 1.1; margin-top: 4px; }
+.ghead p { color: var(--muted); margin: 6px 0 0; }
+.quick { margin: 16px 0 6px; width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; border: 0; border-radius: var(--radius); background: var(--yellow); color: #3B2A00; padding: 14px; font-weight: 800; font-size: 17px; cursor: pointer; }
+.clist { display: grid; gap: 8px; margin-top: 14px; }
+.crow { display: grid; grid-template-columns: 36px 1fr auto; gap: 12px; align-items: center; background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 12px 14px; text-decoration: none; color: inherit; }
+.crow .n { width: 36px; height: 36px; border-radius: 10px; display: grid; place-items: center; background: var(--soft-red); color: var(--red-ink); font-weight: 800; font-variant-numeric: tabular-nums; }
+.crow.done .n { background: var(--blue); color: #fff; }
+.crow h3 { font-size: 16px; font-weight: 700; line-height: 1.3; }
+.crow .sub { font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.crow.next { border-color: var(--red); box-shadow: 0 0 0 1px var(--red); }
+.pill { display: inline-block; font-size: 11px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; padding: 2px 8px; border-radius: 999px; background: var(--soft-red); color: var(--red-ink); margin-left: 6px; vertical-align: 1px; }
+
+/* Concept page */
+.chead { padding: 18px 0 0; }
+.chead p { margin: 10px 0 0; }
+.qw { margin-top: 16px; background: var(--soft-yellow); border-radius: var(--radius); padding: 14px 16px; border-left: 5px solid var(--yellow); }
+.qw b { display: block; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; margin-bottom: 4px; }
+details.before { margin-top: 10px; background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 12px 16px; }
+details.before summary { font-weight: 700; cursor: pointer; }
+details.before p { margin: 8px 0 2px; color: var(--muted); }
+
+.tabs { position: sticky; top: 56px; z-index: 4; display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; background: var(--paper); padding: 14px 0 10px; margin-top: 6px; box-shadow: 0 8px 8px -8px rgba(0,0,0,.12); }
+.tab { border: 1px solid var(--line); background: var(--card); border-radius: 12px; padding: 8px 4px; cursor: pointer; font-weight: 700; font-size: 14px; line-height: 1.2; text-align: center; text-decoration: none; color: var(--ink); }
+.tab small { display: block; font-weight: 600; color: var(--muted); font-size: 12px; font-variant-numeric: tabular-nums; }
+.tab[aria-current="page"] { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.tab[aria-current="page"] small { color: var(--paper); opacity: .75; }
+
+.sect { margin: 14px 0 8px; }
+.sect h2 { font-family: var(--display); font-size: 22px; }
+.sect p { margin: 2px 0 0; color: var(--muted); font-size: 14px; }
+.items { display: grid; gap: 10px; }
+.item { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px 16px; border-left: 5px solid var(--red); }
+.item.focused { border-left-color: var(--blue); }
+.item.book { border-left-color: var(--yellow); }
+.item.tool { border-left-color: var(--blue); }
+.item.is-done { background: color-mix(in srgb, var(--soft-blue) 60%, var(--card)); }
+.ihead { display: flex; gap: 8px; align-items: baseline; justify-content: space-between; }
+.item h3 { font-size: 17px; font-weight: 800; line-height: 1.3; }
+.time { flex: none; font-size: 13px; font-weight: 700; color: var(--muted); background: var(--paper); border: 1px solid var(--line); border-radius: 999px; padding: 1px 9px; font-variant-numeric: tabular-nums; }
+.item p { margin: 6px 0 0; }
+.uses { font-size: 14px; color: var(--muted); margin-top: 4px; }
+.links { display: flex; flex-wrap: wrap; gap: 8px 14px; margin-top: 8px; font-size: 14px; font-weight: 700; }
+.ifoot { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-top: 12px; padding-top: 10px; border-top: 1px dashed var(--line); }
+.check { display: inline-flex; align-items: center; gap: 8px; border: 2px solid var(--blue); background: transparent; color: var(--blue-ink); border-radius: 999px; padding: 6px 14px 6px 8px; font-weight: 800; cursor: pointer; }
+.check .dot { width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--blue); display: grid; place-items: center; font-size: 13px; line-height: 1; color: transparent; }
+.check[aria-pressed="true"] { background: var(--blue); color: #08324F; }
+.check[aria-pressed="true"] .dot { background: #fff; border-color: #fff; color: var(--blue-ink); }
+.stars { display: inline-flex; gap: 2px; }
+.star { border: 0; background: none; cursor: pointer; font-size: 26px; line-height: 1; padding: 4px 2px; color: var(--line); }
+.star.on { color: var(--yellow); }
+.star:hover { transform: scale(1.1); }
+.rate-hint { font-size: 12px; color: var(--muted); width: 100%; margin-top: -4px; }
+
+.note { background: var(--soft-blue); border-radius: var(--radius); padding: 12px 16px; font-size: 15px; }
+.click-card { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px 16px; }
+.click-card h3 { font-size: 13px; letter-spacing: .1em; text-transform: uppercase; font-weight: 800; color: var(--red-ink); }
+.click-card p { margin: 6px 0 0; }
+.nextbox { margin-top: 18px; background: var(--soft-red); border-radius: var(--radius); padding: 14px 16px; }
+.nextbox h3 { font-family: var(--display); font-size: 20px; }
+.btn { display: inline-flex; margin-top: 10px; background: var(--red); color: #fff; border: 0; border-radius: 999px; padding: 10px 18px; font-weight: 800; text-decoration: none; cursor: pointer; }
+
+/* Sheet for "Got 5 minutes?" */
+.sheet-bg { position: fixed; inset: 0; background: rgba(10, 18, 28, .5); display: none; align-items: flex-end; justify-content: center; z-index: 20; }
+.sheet-bg.open { display: flex; }
+.sheet { background: var(--paper); width: 100%; max-width: 560px; border-radius: 20px 20px 0 0; padding: 18px 16px 24px; max-height: 88%; overflow: auto; }
+.sheet .row { display: flex; gap: 8px; margin-top: 12px; }
+.ghost { border: 1px solid var(--line); background: var(--card); border-radius: 999px; padding: 10px 16px; font-weight: 700; cursor: pointer; }
+
+footer.site { text-align: center; color: var(--muted); font-size: 14px; margin-top: 34px; }
+footer.site .coffee { display: inline-block; margin-top: 8px; background: var(--yellow); color: #3B2A00; padding: 8px 16px; border-radius: 999px; font-weight: 800; text-decoration: none; }
+.err { background: var(--soft-red); padding: 16px; border-radius: var(--radius); margin-top: 20px; }
+
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } .star:hover { transform: none; } }
+</style>
+</head>
+<body>
+<div class="bar"><div class="bar-in" id="bar"></div></div>
+<main class="wrap" id="app" aria-live="polite"><p style="padding:40px 0;color:var(--muted)">Loading Teach Early...</p></main>
+<div class="sheet-bg" id="sheetBg"><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle" id="sheet"></div></div>
+
+<script>
+(function () {
+  "use strict";
+
+  // Set this to your Buy Me a Coffee page when you have one. Empty hides the button.
+  var COFFEE_URL = "";
+  var GRADE_COLORS = ["#EA5B6F", "#3E9BDF", "#E9A92B", "#EA5B6F", "#3E9BDF"];
+
+  var DATA = null;
+  var app = document.getElementById("app");
+  var bar = document.getElementById("bar");
+
+  // ---------- Progress store ----------
+  // Saves checkmarks and ratings on this device. Phase 2 can send each change
+  // to a Google Sheet from Store.set without changing anything else.
+  var KEY = "teachearly.progress.v1";
+  var Store = {
+    data: {},
+    load: function () {
+      try { this.data = JSON.parse(localStorage.getItem(KEY) || "{}") || {}; } catch (e) { this.data = {}; }
+    },
+    get: function (id) { return this.data[id] || {}; },
+    set: function (id, patch) {
+      var cur = Object.assign({}, this.get(id), patch, { ts: Date.now() });
+      this.data[id] = cur;
+      try { localStorage.setItem(KEY, JSON.stringify(this.data)); } catch (e) { /* storage blocked: keep in memory */ }
+      return cur;
+    }
+  };
+  Store.load();
+
+  // ---------- Helpers ----------
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  }
+  function ordinal(g) { return ["", "1st", "2nd", "3rd", "4th", "5th"][g]; }
+  function grade(g) { return DATA.grades[g - 1]; }
+  function concept(g, n) { return grade(g).concepts[n - 1]; }
+  function doneCount(list) { return list.filter(function (x) { return Store.get(x.id).done; }).length; }
+  function actsOf(c) { return c.acts.concat(c.focused); }
+  function conceptDone(c) { var a = actsOf(c); return doneCount(a) >= a.length; }
+  function gradeActs(g) { return grade(g).concepts.reduce(function (s, c) { return s.concat(actsOf(c)); }, []); }
+  function currentConcept(g) {
+    var cs = grade(g).concepts;
+    for (var i = 0; i < cs.length; i++) { if (doneCount(actsOf(cs[i])) < 3) return cs[i]; }
+    return cs[cs.length - 1];
+  }
+  function minutes(t) { var m = String(t).match(/\d+/); return m ? parseInt(m[0], 10) : 99; }
+  function toolLink(c, toolStr) {
+    for (var i = 0; i < c.tools.length; i++) {
+      if (c.tools[i].name + " by " + c.tools[i].brand === toolStr) return c.tools[i].amz;
+    }
+    return "https://www.amazon.com/s?k=" + encodeURIComponent(toolStr.replace(" by ", " ")).replace(/%20/g, "+");
+  }
+
+  // ---------- Pieces ----------
+  function stars(id) {
+    var r = Store.get(id).rating || 0, out = "";
+    for (var i = 1; i <= 5; i++) {
+      out += '<button class="star' + (i <= r ? " on" : "") + '" data-act="rate" data-id="' + id + '" data-v="' + i +
+        '" aria-label="Rate ' + i + ' out of 5" aria-pressed="' + (i <= r) + '">★</button>';
+    }
+    return '<span class="stars" aria-label="Your rating">' + out + "</span>";
+  }
+  function checkBtn(id, label) {
+    var d = !!Store.get(id).done;
+    return '<button class="check" data-act="done" data-id="' + id + '" aria-pressed="' + d + '"><span class="dot" aria-hidden="true">✓</span>' + esc(label) + "</button>";
+  }
+  function foot(id, label) { return '<div class="ifoot">' + checkBtn(id, label) + stars(id) + "</div>"; }
+
+  function actCard(a) {
+    return '<article class="item' + (Store.get(a.id).done ? " is-done" : "") + '" id="' + a.id + '">' +
+      '<div class="ihead"><h3>' + esc(a.name) + '</h3><span class="time">' + esc(a.time) + "</span></div>" +
+      "<p>" + esc(a.desc) + "</p>" + foot(a.id, "We did it") + "</article>";
+  }
+  function focusedCard(c, f) {
+    return '<article class="item focused' + (Store.get(f.id).done ? " is-done" : "") + '" id="' + f.id + '">' +
+      '<div class="ihead"><h3>' + esc(f.name) + '<span class="pill">' + esc(f.stage) + '</span></h3><span class="time">10-15 min</span></div>' +
+      '<div class="uses">Uses <a href="' + toolLink(c, f.tool) + '" target="_blank" rel="noopener">' + esc(f.tool) + "</a></div>" +
+      "<p>" + esc(f.desc) + "</p>" + foot(f.id, "We did it") + "</article>";
+  }
+  function bookCard(b) {
+    return '<article class="item book' + (Store.get(b.id).done ? " is-done" : "") + '" id="' + b.id + '">' +
+      "<h3>" + esc(b.title) + '</h3><div class="uses">by ' + esc(b.author) + "</div>" +
+      '<div class="links"><a href="' + b.amz + '" target="_blank" rel="noopener">Find it on Amazon</a>' +
+      (b.yt ? '<a href="' + b.yt + '" target="_blank" rel="noopener">Read-aloud on YouTube</a>' : "") + "</div>" +
+      foot(b.id, "We read it") + "</article>";
+  }
+  function toolCard(t) {
+    return '<article class="item tool' + (Store.get(t.id).done ? " is-done" : "") + '" id="' + t.id + '">' +
+      "<h3>" + esc(t.name) + (t.start ? '<span class="pill">Start here</span>' : "") + '</h3><div class="uses">by ' + esc(t.brand) + "</div>" +
+      '<div class="links"><a href="' + t.amz + '" target="_blank" rel="noopener">Search on Amazon</a></div>' +
+      foot(t.id, "We have it") + "</article>";
+  }
+
+  // ---------- Views ----------
+  function setBar(backHash, crumb) {
+    if (backHash === null) {
+      bar.innerHTML = '<img src="mark.png" alt="Teach Early"><span class="crumb">Teach Early</span>';
+    } else {
+      bar.innerHTML = '<a class="back" href="#' + backHash + '" aria-label="Back"><span aria-hidden="true">‹</span> Back</a>' +
+        '<span class="crumb">' + esc(crumb) + "</span>";
+    }
+  }
+
+  function footer() {
+    return '<footer class="site">Free for every family. Your checkmarks and ratings are saved on this device.' +
+      (COFFEE_URL ? '<br><a class="coffee" href="' + esc(COFFEE_URL) + '" target="_blank" rel="noopener">Buy me a coffee</a>' : "") +
+      "</footer>";
+  }
+
+  function viewHome() {
+    setBar(null);
+    var cards = DATA.grades.map(function (gr) {
+      var all = gradeActs(gr.grade), d = doneCount(all), pct = Math.round(100 * d / all.length);
+      return '<a class="gcard" href="#g' + gr.grade + '">' +
+        '<span class="gnum" style="background:' + GRADE_COLORS[gr.grade - 1] + '">' + gr.grade + "</span>" +
+        "<span><h2>" + ordinal(gr.grade) + ' Grade</h2><span class="sub">' + gr.concepts.length + " concepts, " + d + " of " + all.length + " activities done</span>" +
+        '<div class="meter" aria-hidden="true"><i style="width:' + pct + '%"></i></div></span>' +
+        '<span class="chev" aria-hidden="true">›</span></a>';
+    }).join("");
+    app.innerHTML =
+      '<section class="hero"><img src="logo.png" alt="Teach Early"><p>Screen-free, play-based learning you can do at home with your child.</p></section>' +
+      '<div class="label">Subject</div><div class="subjects"><span class="subj">Math</span><span class="subj off">Reading <small>soon</small></span><span class="subj off">Science <small>soon</small></span></div>' +
+      '<div class="label">Pick a grade</div><div class="grades">' + cards + "</div>" + footer();
+  }
+
+  function viewGrade(g) {
+    var gr = grade(g); setBar("", ordinal(g) + " Grade Math");
+    var cur = currentConcept(g);
+    var rows = gr.concepts.map(function (c) {
+      var a = actsOf(c), d = doneCount(a), isDone = d >= a.length;
+      return '<a class="crow' + (isDone ? " done" : "") + (c === cur && !isDone ? " next" : "") + '" href="#g' + g + "-c" + c.n + '">' +
+        '<span class="n">' + (isDone ? "✓" : c.n) + "</span>" +
+        "<span><h3>" + esc(c.short) + (c === cur && !isDone ? '<span class="pill">You are here</span>' : "") + "</h3>" +
+        '<span class="sub">' + d + " of " + a.length + " activities done</span></span>" +
+        '<span class="chev" aria-hidden="true">›</span></a>';
+    }).join("");
+    app.innerHTML =
+      '<section class="ghead"><div class="eyebrow">Math</div><h1>' + ordinal(g) + " Grade</h1>" +
+      "<p>Ten concepts in order. Each one builds on the last, so start at the top.</p></section>" +
+      '<button class="quick" data-act="five" data-g="' + g + '">Got 5 minutes? Pick an activity for me</button>' +
+      '<div class="clist">' + rows + "</div>" + footer();
+  }
+
+  var TABS = [["acts", "Activities"], ["books", "Books"], ["tools", "Tools"], ["clicking", "Clicking?"]];
+
+  function viewConcept(g, n, tab) {
+    var c = concept(g, n); setBar("g" + g, ordinal(g) + " Grade, Concept " + n);
+    var base = "g" + g + "-c" + n;
+    var counts = {
+      acts: doneCount(actsOf(c)) + "/" + actsOf(c).length,
+      books: doneCount(c.books) + "/" + c.books.length,
+      tools: doneCount(c.tools) + "/" + c.tools.length,
+      clicking: "Check"
+    };
+    var tabs = TABS.map(function (t) {
+      return '<a class="tab" href="#' + base + (t[0] === "acts" ? "" : "-" + t[0]) + '"' + (t[0] === tab ? ' aria-current="page"' : "") + ">" +
+        esc(t[1]) + "<small>" + counts[t[0]] + "</small></a>";
+    }).join("");
+
+    var body = "";
+    if (tab === "acts") {
+      body = '<div class="sect"><h2>Daily activities</h2><p>Easiest first. Move down as confidence builds.</p></div>' +
+        '<div class="items">' + c.acts.map(actCard).join("") + "</div>" +
+        '<div class="sect"><h2>When you have focused time</h2><p>10 to 15 minutes with one hands-on tool.</p></div>' +
+        '<div class="items">' + c.focused.map(function (f) { return focusedCard(c, f); }).join("") + "</div>";
+    } else if (tab === "books") {
+      body = '<div class="sect"><h2>Read-alouds</h2><p>Most accessible first. Read together and talk about the math you notice.</p></div>' +
+        '<div class="items">' + c.books.map(bookCard).join("") + "</div>";
+    } else if (tab === "tools") {
+      body = '<div class="note">You do not need any of these. Every daily activity works with things already in your home. Start with the first one if you want to buy just one.</div>' +
+        '<div class="sect"><h2>Toys and tools</h2><p>Most hands-on first, games last.</p></div>' +
+        '<div class="items">' + c.tools.map(toolCard).join("") + "</div>";
+    } else {
+      var k = c.clicking;
+      body = k ? '<div class="sect"><h2>Is it clicking?</h2><p>A quick check before you move on.</p></div><div class="items">' +
+        '<div class="click-card"><h3>Signs it is clicking</h3><p>' + esc(k.signs) + "</p></div>" +
+        '<div class="click-card"><h3>A common mix-up</h3><p>' + esc(k.mixup) + "</p></div>" +
+        '<div class="click-card"><h3>What to do</h3><p>' + esc(k.todo) + "</p></div>" +
+        '<div class="click-card"><h3>If it keeps coming back</h3><p>' + esc(k.revisit) + "</p></div></div>" : "";
+      var nextC = n < grade(g).concepts.length ? concept(g, n + 1) : null;
+      var nextG = !nextC && g < DATA.grades.length ? g + 1 : null;
+      body += '<div class="nextbox"><h3>What’s next</h3><p>' + esc(c.next) + "</p>" +
+        (nextC ? '<a class="btn" href="#g' + g + "-c" + (n + 1) + '">Go to Concept ' + (n + 1) + "</a>" : "") +
+        (nextG ? '<a class="btn" href="#g' + nextG + '">Go to ' + ordinal(nextG) + " Grade</a>" : "") + "</div>";
+    }
+
+    app.innerHTML =
+      '<section class="chead"><div class="eyebrow">Concept ' + n + " of " + grade(g).concepts.length + "</div><h1>" + esc(c.short) + "</h1>" +
+      c.opening.map(function (p) { return "<p>" + esc(p) + "</p>"; }).join("") +
+      '<div class="qw"><b>Quick win today</b>' + esc(c.quickwin) + "</div>" +
+      '<details class="before"><summary>Before you start</summary><p>' + esc(c.before) + "</p></details></section>" +
+      '<nav class="tabs" aria-label="Concept sections">' + tabs + "</nav>" + body + footer();
+  }
+
+  // ---------- "Got 5 minutes?" ----------
+  var sheetBg = document.getElementById("sheetBg"), sheet = document.getElementById("sheet");
+  function openFive(g) {
+    var c = currentConcept(g);
+    var pool = c.acts.filter(function (a) { return minutes(a.time) <= 5 && !Store.get(a.id).done; });
+    if (!pool.length) pool = c.acts.filter(function (a) { return !Store.get(a.id).done; });
+    if (!pool.length) pool = c.acts;
+    var a = pool[Math.floor(Math.random() * pool.length)];
+    sheet.innerHTML = '<div class="eyebrow">Concept ' + c.n + ": " + esc(c.short) + '</div>' +
+      '<h2 id="sheetTitle" style="font-family:var(--display);font-size:24px;margin:4px 0 10px">Try this one</h2>' +
+      '<div class="items">' + actCard(a) + "</div>" +
+      '<div class="row"><button class="ghost" data-act="five" data-g="' + g + '">Pick another</button><button class="ghost" data-act="close">Close</button></div>';
+    sheetBg.classList.add("open");
+    var first = sheet.querySelector(".check"); if (first) first.focus();
+  }
+  function closeSheet() { sheetBg.classList.remove("open"); sheet.innerHTML = ""; route(); }
+  sheetBg.addEventListener("click", function (e) { if (e.target === sheetBg) closeSheet(); });
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape" && sheetBg.classList.contains("open")) closeSheet(); });
+
+  // ---------- Events ----------
+  document.addEventListener("click", function (e) {
+    var b = e.target.closest("[data-act]"); if (!b) return;
+    var act = b.getAttribute("data-act"), id = b.getAttribute("data-id");
+    if (act === "done") {
+      var now = !Store.get(id).done; Store.set(id, { done: now });
+      b.setAttribute("aria-pressed", String(now));
+      var card = b.closest(".item"); if (card) card.classList.toggle("is-done", now);
+      if (!sheetBg.classList.contains("open")) refreshCounts();
+    } else if (act === "rate") {
+      var v = parseInt(b.getAttribute("data-v"), 10);
+      var cur = Store.get(id).rating || 0, nv = cur === v ? 0 : v;
+      Store.set(id, { rating: nv });
+      var group = b.parentNode.querySelectorAll(".star");
+      for (var i = 0; i < group.length; i++) { group[i].classList.toggle("on", i < nv); group[i].setAttribute("aria-pressed", String(i < nv)); }
+    } else if (act === "five") { openFive(parseInt(b.getAttribute("data-g"), 10)); }
+    else if (act === "close") { closeSheet(); }
+  });
+
+  function refreshCounts() {
+    // Keep the scroll position and only update the tab counters.
+    var m = parse(); if (m.view !== "concept") return;
+    var c = concept(m.g, m.n), tabs = document.querySelectorAll(".tab small");
+    if (tabs.length === 4) {
+      tabs[0].textContent = doneCount(actsOf(c)) + "/" + actsOf(c).length;
+      tabs[1].textContent = doneCount(c.books) + "/" + c.books.length;
+      tabs[2].textContent = doneCount(c.tools) + "/" + c.tools.length;
+    }
+  }
+
+  // ---------- Routing (#g2, #g2-c4, #g2-c4-books) ----------
+  function parse() {
+    var h = location.hash.replace(/^#/, "");
+    var m = h.match(/^g([1-5])(?:-c(\d{1,2}))?(?:-(books|tools|clicking))?$/);
+    if (!m) return { view: "home" };
+    var g = parseInt(m[1], 10);
+    if (!m[2]) return { view: "grade", g: g };
+    var n = parseInt(m[2], 10);
+    if (n < 1 || n > grade(g).concepts.length) return { view: "grade", g: g };
+    return { view: "concept", g: g, n: n, tab: m[3] || "acts" };
+  }
+  var lastKey = "";
+  function route() {
+    var m = parse(), key = m.view + m.g + m.n;
+    if (m.view === "home") viewHome();
+    else if (m.view === "grade") viewGrade(m.g);
+    else viewConcept(m.g, m.n, m.tab);
+    if (key !== lastKey) window.scrollTo(0, 0);
+    lastKey = key;
+  }
+  window.addEventListener("hashchange", route);
+
+  fetch("te_data.json").then(function (r) {
+    if (!r.ok) throw new Error(r.status);
+    return r.json();
+  }).then(function (d) { DATA = d; route(); }).catch(function () {
+    app.innerHTML = '<div class="err">The activities did not load. Check your connection and reload the page.</div>';
+  });
+})();
+</script>
+</body>
+</html>
